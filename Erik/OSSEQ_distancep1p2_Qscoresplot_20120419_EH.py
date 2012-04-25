@@ -127,8 +127,14 @@ plt.xlabel('Insert length p1 p2')
 plt.ylabel('Average Q score per read')
 plt.title('OSSEQ distance vs quality')
 plt.grid(True)
-plt.savefig(p1File.split(".sam")[0] + ".distance_Qscore.png")
+# calc the trendline (it is simply a linear fitting)
+z = np.polyfit(X, Y, 1)
+p = np.poly1d(z)
+plt.plot(X,p(X),"r--")
+# the line equation:
+#print "y=%.6fx+(%.6f)"%(z[0],z[1])
 
-plt.show()
+plt.savefig(p1File.split(".sam")[0] + ".distance_Qscore.png")
+#plt.show()
         
 

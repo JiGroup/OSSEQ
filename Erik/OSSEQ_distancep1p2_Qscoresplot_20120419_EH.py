@@ -12,10 +12,11 @@
 from matplotlib import pyplot as plt
 import numpy as np
 import pylab
+import sys
 
 ##### INPUTS AND OUTPUTS #####
-p1File = '/Users/erikhopmans/Documents/DATA-ANALYSIS/Programming/TESTAREA/p1.st.sam'
-p2File = '/Users/erikhopmans/Documents/DATA-ANALYSIS/Programming/TESTAREA/p2.st.sam'
+p1File = sys.argv[1]
+p2File = sys.argv[2]
 phredMinus = 33
 
 
@@ -107,7 +108,7 @@ output_file.close()
 #sort on insert size
 output_file2 = open(p1File.split(".sam")[0] + ".dist.srt.sam", 'w')
 sortList = [line.strip() for line in open(p1File.split(".sam")[0] + ".dist.sam")] 
-sortList.sort(key=lambda line: int(line.split(" ")[0]))
+sortList.sort(key=lambda line: int(line.split(" ")[0]))     #Why do I need the line strip part in the line above, doesn't this do the same thing as this line?
 for line in sortList:
     print >> output_file2, line
 

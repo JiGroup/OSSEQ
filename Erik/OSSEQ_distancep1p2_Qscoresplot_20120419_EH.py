@@ -82,7 +82,7 @@ while 1:
         distance = distance + p2Length -40    #  |p1---->_____________|<----ccccp2
     elif distance < 0:
         distance = (distance*-1) + p1Length -40    #  |p2cccc---->_________|<-----p1
-
+    #TODO: if p2 length is shorter then 40 you will create negative values with the -40 step (as is the case in run 130!!)!!!
     if distance > 2000:                #skip the lines in which p1 and 2 do not align within 2000bp of each other
         continue
 

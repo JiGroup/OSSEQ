@@ -122,7 +122,7 @@ with open((p1File.split(".sam")[0] + ".dist.srt.sam"), 'r') as f:
 with open((p1File.split(".sam")[0] + ".dist.srt.sam"), 'r') as f:
     Y = np.loadtxt(f, dtype='float', comments="#", skiprows=0, usecols=[1])     # TODO: why does nploadtxt close the file??
 
-
+#TODO rename X and Y, this will get confusing when plotting in different ways
 plt.plot(X, Y, 'o')
 plt.xlabel('Insert length p1 p2')
 plt.ylabel('Average Q score per read')

@@ -13,6 +13,19 @@ import pybedtools
 
 
 ##### INPUTS AND OUTPUTS #####
+##TODO: use input file with columns for pathtobam bamfilename pathtobed bed450filename bed1500filename
+##TODO: thing into loop for taking 1 line at a time to process
+##TODO: make indicator for for where it is in the process.
+##TODO: incorporate scriptinformation.py for outputlogfile of analysis
+##TODO: All' 'NMs' 'NMs_oligoC' 'NMs_oligoD' 'Align' 'Align_on_target' 'Align_off_target'
+
+
+
+
+
+
+
+
 bam = sys.argv[1]
 if bam[-4:] != ".bam":
     print "ERROR! The input file is expected to be in the bam file format"

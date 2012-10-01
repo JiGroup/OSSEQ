@@ -8,27 +8,39 @@
 
 ##### IMPORT MODULES #####
 import sys
+import csv
 import pysam
 import pybedtools
 
 
 ##### INPUTS AND OUTPUTS #####
-##TODO: use input file with columns for pathtobam bamfilename pathtobed bed450filename bed1500filename
+
 ##TODO: thing into loop for taking 1 line at a time to process
 ##TODO: make indicator for for where it is in the process.
 ##TODO: incorporate scriptinformation.py for outputlogfile of analysis
 ##TODO: All' 'NMs' 'NMs_oligoC' 'NMs_oligoD' 'Align' 'Align_on_target' 'Align_off_target'
 
+f=csv.reader(open(sys.argv[1], 'rU'), dialect=csv.excel_tab)
+for row in f:
+    pathBam = row[0]
+    fileBam = row[1]
+    pathBed = row[2]
+    fileBed450 = row[3]
+    fileBed1500 = row[4]
+    bam = pathBam+fileBam
+    bed450 = pathBed+fileBed450
+    bed1500 = pathBed+fileBed1500
+
+    #Check if input files are correct
+    if bam[-4:] != ".bam":
+        print "ERROR! The input file is expected to be in the bam file format"
+    if bed450[-4:] != ".bed":
+        print "ERROR! The bed450 file is expected to be in the bed file format"
+    if bed1500[-4:] != ".bed":
+        print "ERROR! The bed1500 file is expected to be in the bed file format"
 
 
 
-
-
-
-
-bam = sys.argv[1]
-if bam[-4:] != ".bam":
-    print "ERROR! The input file is expected to be in the bam file format"
 
 samfile = pysam.Samfile(bam, 'rb')
 bedtool = pybedtools.BedTool(bam)

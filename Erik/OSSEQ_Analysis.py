@@ -30,8 +30,11 @@ for row in f:
     bam = pathBam+fileBam
     bed450 = pathBed+fileBed450
     bed1500 = pathBed+fileBed1500
+    bedFile450 = pathBed+fileBed450
+    bedFile1500 = pathBed+fileBed1500
 
     #Check if input files are correct
+#Check if input files are correct
     if bam[-4:] != ".bam":
         print "ERROR! The input file is expected to be in the bam file format"
     if bed450[-4:] != ".bed":
@@ -41,6 +44,11 @@ for row in f:
 
 
 
+        print "ERROR in load file! The bam file is expected to be in the bam file format"
+    if bedFile450[-4:] != ".bed":
+        print "ERROR in load file! The bed450 file is expected to be in the bed file format"
+    if bedFile1500[-4:] != ".bed":
+        print "ERROR in load file! The bed1500 file is expected to be in the bed file format"
 
 samfile = pysam.Samfile(bam, 'rb')
 bedtool = pybedtools.BedTool(bam)

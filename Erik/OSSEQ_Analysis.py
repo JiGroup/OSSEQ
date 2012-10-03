@@ -11,7 +11,7 @@ import sys
 import csv
 import pysam
 import pybedtools
-
+from datetime import datetime
 
 ##### INPUTS AND OUTPUTS #####
 ##TODO: make indicator for for where it is in the process.
@@ -53,6 +53,13 @@ for row in f:
 
 ##### SCRIPT #####
 
+    #Processing current file:
+    now = datetime.now()
+    print "Started processing file", fileBam, "at", now.strftime("%Y-%m-%d %H:%M:%S")
+    
+    
+    
+    
 #total nr of reads (if zero, an exception is required for calculating the percAlignment to prevent error)
     samfileTotalReads = samfile.mapped + samfile.unmapped
     if samfileTotalReads > 0:
@@ -60,16 +67,32 @@ for row in f:
     else:
         percAlignment = "NA"
 
+#nr of unmapped reads containing oligoC/D sequence (Georges used these strings for oligoC/D in previous analyses
     for read in samfile.fetch(until_eof=True):
         if read.is_unmapped:
-            if 'CATTAAAAAA' in read.seq:                     #Georges has used this sequence for oligoC/D in previous analyses
+            if 'CATTAAAAAA' in read.seq:
                 oligoC += 1
             if 'CTTGAAAAAA' in read.seq:
                 oligoD += 1
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     print fileBam
     print "Total nr of mapped Reads:", samfile.mapped
     print "Total nr of unmapped Reads NM:", samfile.unmapped
+    print "Nr of oligoC in unmapped Reads NM:", oligoC
+    print "Nr of oligoD in unmapped Reads NM:", oligoD
     print "Total nr of Reads:", samfileTotalReads
     print "Percentage Alignment:", percAlignment,"%"
 

@@ -12,12 +12,23 @@ import csv
 import pysam
 import pybedtools
 from datetime import datetime
+import getpass
 
 ##### INPUTS AND OUTPUTS #####
-##TODO: incorporate scriptinformation.py for outputlogfile of analysis
- 
+now = datetime.now()
+
 outputFile =  open(sys.argv[1][:-4]+"OUTPUT.txt", 'w')
-print >> outputFile, "Filename"'\t', "Reads:"'\t', "Mapped Reads:"'\t', "NonMapped Reads"'\t', "% Align"'\t', "OligoC in NM"'\t', "OligoD in NM"'\t', "On target"'\t', "% On Target"'\t', "Off Target"'\t', "% Off Target"'\t'
+print >> outputFile, "Filename",'\t',"Reads:",'\t',"Mapped Reads:",'\t',"NonMapped Reads",'\t',"% Align",'\t',"OligoC in NM",'\t',"OligoD in NM",'\t',"On target",'\t',"% On Target",'\t',"Off Target",'\t',"% Off Target",'\t'
+
+
+#Logfile
+logFile = open(sys.argv[1][:-4]+"LOG.txt", 'w')
+print >> logFile, "Script was run by user:", getpass.getuser()
+print >> logFile, "Name of the script:", __file__
+print >> logFile, "Date and time when script was started:", now.strftime("%Y-%m-%d %H:%M")
+print >> logFile, "Input file of this script:", sys.argv[1]
+print >> logFile, "Output file of this script:", outputFile
+print >> logFile, "Description of output data: On off target nr's and percentages"
 
 
 
@@ -114,11 +125,15 @@ for row in f:
         offTargetPerc1500 = "NA"
 
 #####OUTPUT########
-    print >> outputFile'\t', fileBam'\t', inputFileTotalReads'\t', inputFile.mapped'\t', inputFile.unmapped'\t', percAlignment'\t', oligoC'\t', oligoD'\t', bam_bed450Count'\t', onTargetPerc450'\t', inputFile.mapped-bam_bed1500Count'\t', offTargetPerc1500'\t'
+    print >> outputFile, fileBam,'\t', inputFileTotalReads,'\t', inputFile.mapped,'\t', inputFile.unmapped,'\t', percAlignment,'\t', oligoC,'\t', oligoD,'\t', bam_bed450Count,'\t', onTargetPerc450,'\t', inputFile.mapped-bam_bed1500Count,'\t', offTargetPerc1500,'\t'
 
 
 outputFile.close()
 
+#logging of logfile
+now = datetime.now()
+print >> logFile, "Date and time when script was finished:", now.strftime("%Y-%m-%d %H:%M")
+logFile.close()
 
 
 

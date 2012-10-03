@@ -47,7 +47,8 @@ for row in f:
 ##### DEFINE FUNCTIONS #####
     totalReads = 0
     totalAligningReads = 0
-
+    oligoC = 0
+    oligoD = 0
 
 
 ##### SCRIPT #####
@@ -59,16 +60,27 @@ for row in f:
     else:
         percAlignment = "NA"
 
-
+    for read in samfile.fetch(until_eof=True):
+        if read.is_unmapped:
+            if 'CATTAAAAAA' in read.seq:                     #Georges has used this sequence for oligoC/D in previous analyses
+                oligoC += 1
+            if 'CTTGAAAAAA' in read.seq:
+                oligoD += 1
 
     print fileBam
     print "Total nr of mapped Reads:", samfile.mapped
-    print "Total nr of unmapped Reads:", samfile.unmapped
+    print "Total nr of unmapped Reads NM:", samfile.unmapped
     print "Total nr of Reads:", samfileTotalReads
-    
-    
-
     print "Percentage Alignment:", percAlignment,"%"
+
+#
+#First write everything in rows to file, then reload it and use zip to get it into columns:
+#>>> my_list=[[1,2,3],[4,5,6],[7,8,9,10]]
+#>>> print zip(*my_list)
+#[(1, 4, 7), (2, 5, 8), (3, 6, 9)]
+
+
+
 
 #################################################################################################################################################
 ##On target (within 450bp of capture probes)

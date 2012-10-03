@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#
+# OSSEQ_Analysis v1.0
 #
 #
 #  Created by Erik Hopmans on 08/24/12.
@@ -130,7 +130,7 @@ for row in f:
 
 outputFile.close()
 
-#logging of logfile
+#finishing logfile
 now = datetime.now()
 print >> logFile, "Date and time when script was finished:", now.strftime("%Y-%m-%d %H:%M")
 logFile.close()
@@ -138,10 +138,6 @@ logFile.close()
 
 
 
-
-
-
-#Which file was analyzed, when, with what version of script, by whom? #TODO
 
 
 

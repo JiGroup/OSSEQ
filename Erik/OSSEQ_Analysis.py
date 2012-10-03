@@ -14,9 +14,15 @@ import pybedtools
 from datetime import datetime
 
 ##### INPUTS AND OUTPUTS #####
-##TODO: make indicator for for where it is in the process.
 ##TODO: incorporate scriptinformation.py for outputlogfile of analysis
-##TODO: All' 'NMs' 'NMs_oligoC' 'NMs_oligoD' 'Align' 'Align_on_target' 'Align_off_target'
+ 
+outputFile =  open(sys.argv[1][:-4]+"OUTPUT.txt", 'w')
+print >> outputFile, "Filename"'\t', "Reads:"'\t', "Mapped Reads:"'\t', "NonMapped Reads"'\t', "% Align"'\t', "OligoC in NM"'\t', "OligoD in NM"'\t', "On target"'\t', "% On Target"'\t', "Off Target"'\t', "% Off Target"'\t'
+
+
+
+##### SCRIPT #####
+
 
 f=csv.reader(open(sys.argv[1], 'rU'), dialect=csv.excel_tab)
 for row in f:
@@ -49,7 +55,7 @@ for row in f:
     oligoD = 0
 
 
-##### SCRIPT #####
+
 
     #Processing current file:
     now = datetime.now()
@@ -77,8 +83,10 @@ for row in f:
 #On/Off target intersectbed (within 450bp or outside or 1500bp of capture probes (450bp region is searched within 1500bedtool (less sequences))
     now = datetime.now()
     print "Started processing bed1500 at", now.strftime("%Y-%m-%d %H:%M:%S")
+
     bam_bed1500 = bedtool.intersect(bed1500)
     bam_bed1500Count = bam_bed1500.count()
+
     now = datetime.now()
     print "Finished processing bed1500 at", now.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -86,8 +94,10 @@ for row in f:
 
     now = datetime.now()
     print "Started processing bed450 at", now.strftime("%Y-%m-%d %H:%M:%S")
+
     bam_bed450 = bam_bed1500.intersect(bed450)
     bam_bed450Count = bam_bed450.count()
+
     now = datetime.now()
     print "Finished processing bed450 at", now.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -103,31 +113,13 @@ for row in f:
     else:
         offTargetPerc1500 = "NA"
 
-
-    print fileBam
-    print "Total nr of Reads:", inputFileTotalReads
-    print "Total nr of mapped Reads:", inputFile.mapped
-    print "Total nr of unmapped Reads NM:", inputFile.unmapped
-    print "Percentage Alignment:", percAlignment,"%"
-    print "Nr of oligoC in unmapped Reads NM:", oligoC
-    print "Nr of oligoD in unmapped Reads NM:", oligoD
-
-    print "Nr of reads On target", bam_bed450Count
-    print "Percentage On target:", onTargetPerc450,"%"
-    print "Nr of reads Off target", inputFile.mapped - bam_bed1500Count
-    print "Percentage Off target:", offTargetPerc1500,"%"
+#####OUTPUT########
+    print >> outputFile'\t', fileBam'\t', inputFileTotalReads'\t', inputFile.mapped'\t', inputFile.unmapped'\t', percAlignment'\t', oligoC'\t', oligoD'\t', bam_bed450Count'\t', onTargetPerc450'\t', inputFile.mapped-bam_bed1500Count'\t', offTargetPerc1500'\t'
 
 
-#
-#First write everything in rows to file, then reload it and use zip to get it into columns:
-#>>> my_list=[[1,2,3],[4,5,6],[7,8,9,10]]
-#>>> print zip(*my_list)
-#[(1, 4, 7), (2, 5, 8), (3, 6, 9)]
+outputFile.close()
 
 
-
-
-#################################################################################################################################################
 
 
 
@@ -138,7 +130,7 @@ for row in f:
 
 
 
-#####OUTPUT########
+
 
 
 

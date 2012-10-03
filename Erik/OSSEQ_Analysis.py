@@ -74,32 +74,34 @@ for row in f:
                 oligoD += 1
 
 
-#On target (within 450bp of capture probes)
-    now = datetime.now()
-    print "Started processing bed450 at", now.strftime("%Y-%m-%d %H:%M:%S")
-    bam_bed450 = bedtool.intersect(bed450).count()
-    now = datetime.now()
-    print "Finished processing bed450 at", now.strftime("%Y-%m-%d %H:%M:%S")
-
-    if inputFile.mapped > 0:
-        onTargetPerc450 = (1.0*bam_bed450)/inputFile.mapped*100
-    else:
-        onTargetPerc450 = "NA"
-
-
-#Off target (outside 1500bp of capture probes)
+#On/Off target intersectbed (within 450bp or outside or 1500bp of capture probes (450bp region is searched within 1500bedtool (less sequences))
     now = datetime.now()
     print "Started processing bed1500 at", now.strftime("%Y-%m-%d %H:%M:%S")
-    bam_bed1500 = bedtool.intersect(bed1500).count()
+    bam_bed1500 = bedtool.intersect(bed1500)
+    bam_bed1500Count = bam_bed1500.count()
     now = datetime.now()
     print "Finished processing bed1500 at", now.strftime("%Y-%m-%d %H:%M:%S")
 
+
+
+    now = datetime.now()
+    print "Started processing bed450 at", now.strftime("%Y-%m-%d %H:%M:%S")
+    bam_bed450 = bam_bed1500.intersect(bed450)
+    bam_bed450Count = bam_bed450.count()
+    now = datetime.now()
+    print "Finished processing bed450 at", now.strftime("%Y-%m-%d %H:%M:%S")
+
+    #On/Off target percentages
+
     if inputFile.mapped > 0:
-        offTargetPerc1500 = (1.0*inputFile.mapped - bam_bed1500)/inputFile.mapped*100
+        onTargetPerc450 = (1.0*bam_bed450Count)/inputFile.mapped*100
+    else:
+        onTargetPerc450 = "NA"
+
+    if inputFile.mapped > 0:
+        offTargetPerc1500 = (1.0*inputFile.mapped - bam_bed1500Count)/inputFile.mapped*100
     else:
         offTargetPerc1500 = "NA"
-
-    #I tried to first do an intersectbed on the bed1500, followed by an intersectbed on that subset with bed450 to increase efficiency, however I get an error that seems to be a bedtools bug
 
 
     print fileBam
@@ -110,9 +112,9 @@ for row in f:
     print "Nr of oligoC in unmapped Reads NM:", oligoC
     print "Nr of oligoD in unmapped Reads NM:", oligoD
 
-    print "Nr of reads On target", bam_bed450
+    print "Nr of reads On target", bam_bed450Count
     print "Percentage On target:", onTargetPerc450,"%"
-    print "Nr of reads Off target", inputFile.mapped - bam_bed1500
+    print "Nr of reads Off target", inputFile.mapped - bam_bed1500Count
     print "Percentage Off target:", offTargetPerc1500,"%"
 
 

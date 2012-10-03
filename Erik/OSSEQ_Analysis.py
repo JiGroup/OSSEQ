@@ -90,7 +90,7 @@ for row in f:
     bam_bed1500 = bedtool.intersect(bed1500).count()
     now = datetime.now()
     print "Finished processing bed1500 at", now.strftime("%Y-%m-%d %H:%M:%S")
-    offTargetPerc1500 = (1.0*inputFile.mapped - bam_bed1500))/inputFile.mapped*100
+    offTargetPerc1500 = (1.0*inputFile.mapped - bam_bed1500)/inputFile.mapped*100
 
     
     #I tried to first do an intersectbed on the bed1500, followed by an intersectbed on that subset with bed450 to increase efficiency, however I get an error that seems to be a bedtools bug

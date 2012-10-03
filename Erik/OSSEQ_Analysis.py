@@ -38,15 +38,13 @@ for row in f:
         print "ERROR in load file! The bed1500 file is expected to be in the bed file format"
 
 # Open bam files and bed files for processing
-    samfile = pysam.Samfile(bam, 'rb')
+    inputFile = pysam.Samfile(bam, 'rb')
     bedtool = pybedtools.BedTool(bam)
     bed450 = pybedtools.BedTool(bedFile450)
     bed1500 = pybedtools.BedTool(bedFile1500)
 
 
-##### DEFINE FUNCTIONS #####
-    totalReads = 0
-    totalAligningReads = 0
+#### DEFINE FUNCTIONS #####
     oligoC = 0
     oligoD = 0
 
@@ -61,14 +59,14 @@ for row in f:
     
     
 #total nr of reads (if zero, an exception is required for calculating the percAlignment to prevent error)
-    samfileTotalReads = samfile.mapped + samfile.unmapped
-    if samfileTotalReads > 0:
-        percAlignment =  ((1.0*samfile.mapped)/samfileTotalReads)*100
+    inputFileTotalReads = inputFile.mapped + inputFile.unmapped
+    if inputFileTotalReads > 0:
+        percAlignment =  ((1.0*inputFile.mapped)/inputFileTotalReads)*100
     else:
         percAlignment = "NA"
 
-#nr of unmapped reads containing oligoC/D sequence (Georges used these strings for oligoC/D in previous analyses
-    for read in samfile.fetch(until_eof=True):
+#nr of unmapped reads containing oligoC/D sequence (Georges used these strings for oligoC/D in previous analyses)
+    for read in inputFile.fetch(until_eof=True):
         if read.is_unmapped:
             if 'CATTAAAAAA' in read.seq:
                 oligoC += 1
@@ -76,25 +74,41 @@ for row in f:
                 oligoD += 1
 
 
+#On target (within 450bp of capture probes)
+    now = datetime.now()
+    print "Started processing bed450 at", now.strftime("%Y-%m-%d %H:%M:%S")
+    bam_bed450 = bedtool.intersect(bed450).count()
+    now = datetime.now()
+    print "Finished processing bed450 at", now.strftime("%Y-%m-%d %H:%M:%S")
+    onTargetPerc450 = (1.0*bam_bed450)/inputFile.mapped*100
 
 
 
+#Off target (outside 1500bp of capture probes)
+    now = datetime.now()
+    print "Started processing bed1500 at", now.strftime("%Y-%m-%d %H:%M:%S")
+    bam_bed1500 = bedtool.intersect(bed1500).count()
+    now = datetime.now()
+    print "Finished processing bed1500 at", now.strftime("%Y-%m-%d %H:%M:%S")
+    offTargetPerc1500 = (1.0*inputFile.mapped - bam_bed1500))/inputFile.mapped*100
 
-
-
-
-
-
-
+    
+    #I tried to first do an intersectbed on the bed1500, followed by an intersectbed on that subset with bed450 to increase efficiency, however I get an error that seems to be a bedtools bug
 
 
     print fileBam
-    print "Total nr of mapped Reads:", samfile.mapped
-    print "Total nr of unmapped Reads NM:", samfile.unmapped
+    print "Total nr of Reads:", inputFileTotalReads
+    print "Total nr of mapped Reads:", inputFile.mapped
+    print "Total nr of unmapped Reads NM:", inputFile.unmapped
+    print "Percentage Alignment:", percAlignment,"%"
     print "Nr of oligoC in unmapped Reads NM:", oligoC
     print "Nr of oligoD in unmapped Reads NM:", oligoD
-    print "Total nr of Reads:", samfileTotalReads
-    print "Percentage Alignment:", percAlignment,"%"
+
+    print "Nr of reads On target", bam_bed450
+    print "Percentage On target:", onTargetPerc450,"%"
+    print "Nr of reads Off target", inputFile.mapped - bam_bed1500
+    print "Percentage Off target:", offTargetPerc1500,"%"
+
 
 #
 #First write everything in rows to file, then reload it and use zip to get it into columns:
@@ -106,26 +120,9 @@ for row in f:
 
 
 #################################################################################################################################################
-##On target (within 450bp of capture probes)
-#bam_bed450 = bedtool.intersect(bed450).count()
-#
-#print "Nr of reads on target", bam_bed450
-#
-#onTargetPerc450 = (1.0*bam_bed450)/totalAligningReads*100
-#
-#print "Percentage On target:", onTargetPerc450,"%"
-#
-##Off target (outside 1500bp of capture probes)
-#
-#bam_bed1500 = bedtool.intersect(bed1500).count
-#offTargetPerc1500 = (1.0*(totalAligningReads-bam_bed1500))/totalAligningReads*100
-#
-#print "Percentage Off target:", offTargetPerc1500,"%"
-#
-##I tried to first do an intersectbed on the bed1500, followed by an intersectbed on that subset with bed450 to increase efficiency, however I get an error that seems to be a bedtools bug
-#
-##Qscores and Q score drop? #TODO
-#
+
+
+
 
 
 

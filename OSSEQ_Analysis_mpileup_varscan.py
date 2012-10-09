@@ -41,7 +41,7 @@ for row in f:
 
 
 #Check if input files are correct, skip p2 files, check if input files are bam and bed files
-    if "_p2" in fileBam:
+    if "p2." in fileBam:
         continue
     if bam[-4:] != ".bam":
         print "ERROR in load file! The bam file is expected to be in the bam file format"
@@ -54,7 +54,7 @@ for row in f:
     now = datetime.now()
     print "Started processing bed450 at", now.strftime("%Y-%m-%d %H:%M:%S")
 
-    intersectBed = "intersectBed -abam " +pathBam+ " -b " +pathBed+ " > " +fileBam[:-4]+"ontarget.bam"
+    intersectBed = "intersectBed -abam " +bam+ " -b " +fileBed450+ " > " +fileBam[:-4]+"ontarget.bam"
     os.system(intersectBed)
 
 
@@ -72,7 +72,7 @@ for row in f:
     os.system(varscanSNP)
 
     now = datetime.now()
-    print "Started processing varScan SNP at", now.strftime("%Y-%m-%d %H:%M:%S")
+    print "Started processing varScan IND at", now.strftime("%Y-%m-%d %H:%M:%S")
 
     varscanIND = "java -jar /mnt/cluster2-analysis/Data/Reference_and_Resources/java/VarScan.v2.2.8.jar mpileup2indel "+fileBam[:-4]+"ontarget.mp > " +fileBam[:-4]+"ontarget.ind.out"
     os.system(varscanIND)

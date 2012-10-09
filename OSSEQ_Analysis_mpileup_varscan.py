@@ -40,7 +40,7 @@ for row in f:
     bedFile450 = pathBed+fileBed450
 
 
-#Check if input files are correct
+#Check if input files are correct, skip p2 files, check if input files are bam and bed files
     if "_p2" in fileBam:
         continue
     if bam[-4:] != ".bam":
@@ -49,7 +49,7 @@ for row in f:
         print "ERROR in load file! The bed450 file is expected to be in the bed file format"
 
 
-#IntersectBed and subsequently do a mpileup on the intersected bam files. Next varscan is performed on the mp files. Filenames for output file are created by taking the input bamfile name (fileBam) and replacing the .bam extension with ontarget.bam and subsequently .mp for the pileup, snp.out and ind.out for varscan.
+#IntersectBed and subsequently do a mpileup on the intersected bam files. Next varscan is performed on the mp files. Filenames for output file are created by taking the input bamfile name (fileBam) and replacing the .bam extension with ontarget.bam and subsequently .mp for the pileup, snp.out and ind.out for varscan. in mpileup -B does not automatically change phred scores close to indels (keeps sequencer phred scores); -d100000000 to prevent stopping pileup after a depth of 8000 (autosetting); -f to add reference genome.
 
     now = datetime.now()
     print "Started processing bed450 at", now.strftime("%Y-%m-%d %H:%M:%S")

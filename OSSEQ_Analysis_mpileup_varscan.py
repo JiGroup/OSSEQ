@@ -55,27 +55,27 @@ for row in f:
     print "Started processing bed450 at", now.strftime("%Y-%m-%d %H:%M:%S")
 
     intersectBed = "intersectBed -abam " +pathBam+ " -b " +pathBed+ " > " +fileBam[:-4]+"ontarget.bam"
-    os.sys(intersectBed)
+    os.system(intersectBed)
 
 
     now = datetime.now()
     print "Started processing pileup at", now.strftime("%Y-%m-%d %H:%M:%S")
 
     samPileUp = "samtools mpileup  -B -d100000000  -f  /mnt/cluster2-analysis/Data/Reference_and_Resources/genomes/human_g1k_v37/human_g1k_v37.fasta " +fileBam[:-4]+"ontarget.bam > "+fileBam[:-4]+"ontarget.mp"
-    os.sys(samPileUp)
+    os.system(samPileUp)
 
 
     now = datetime.now()
     print "Started processing varScan SNP at", now.strftime("%Y-%m-%d %H:%M:%S")
 
     varscanSNP = "java -jar /mnt/cluster2-analysis/Data/Reference_and_Resources/java/VarScan.v2.2.8.jar mpileup2snp "+fileBam[:-4]+"ontarget.mp > " +fileBam[:-4]+"ontarget.snp.out"
-    os.sys(varscanSNP)
+    os.system(varscanSNP)
 
     now = datetime.now()
     print "Started processing varScan SNP at", now.strftime("%Y-%m-%d %H:%M:%S")
 
     varscanIND = "java -jar /mnt/cluster2-analysis/Data/Reference_and_Resources/java/VarScan.v2.2.8.jar mpileup2indel "+fileBam[:-4]+"ontarget.mp > " +fileBam[:-4]+"ontarget.ind.out"
-    os.sys(varscanIND)
+    os.system(varscanIND)
 
 
 

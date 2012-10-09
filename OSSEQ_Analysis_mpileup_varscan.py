@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# OSSEQ_Analysis v1.0
+# OSSEQ_Analysis_mpileup_varscan v1.0
 #
 #
 #  Created by Erik Hopmans on 08/24/12.
@@ -23,8 +23,7 @@ print >> logFile, "Script was run by user:", getpass.getuser()
 print >> logFile, "Name of the script:", __file__
 print >> logFile, "Date and time when script was started:", now.strftime("%Y-%m-%d %H:%M")
 print >> logFile, "Input file of this script:", sys.argv[1]
-print >> logFile, "Output file of this script:", outputFile
-print >> logFile, "Description of output data: On off target nr's and percentages"
+print >> logFile, "Description of output data: ontarget.bam & pileup files and varscan analysis of SNP and indels"
 
 
 
@@ -79,6 +78,8 @@ for row in f:
 
 
 #finishing logfile
+
+print >> logFile, "Output file of this script:", fileBam[:-4]+"ontarget.bam/ontarget.mp/ontarget.snp.out/ontarget.ind.out" 
 now = datetime.now()
 print >> logFile, "Date and time when script was finished:", now.strftime("%Y-%m-%d %H:%M")
 logFile.close()

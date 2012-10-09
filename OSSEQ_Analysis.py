@@ -1,6 +1,17 @@
 #!/usr/bin/env python
 
-# OSSEQ_Analysis v1.0
+# OSSEQ_Analysis v1.0:
+#Uses an tab-delimeted inputfile as command line argument with 5 columns:
+#column 1: path to bam file
+#column 2: filename bam file
+#column 3: path to bed files
+#column 4: filename bed file 450bp around capture probe (On target)
+#column 5: filename bed file 1500bp around capture probe (Off target)
+#
+#Subsequently the nr of mapped and unmapped reads are determined (+percentages), nr of unmapped reads containing oligoC or D sequences.
+#In the next part an intersectBed is performed to determine the on and off target numbers and percentages.
+#
+#
 #
 #
 #  Created by Erik Hopmans on 08/24/12.
@@ -17,11 +28,12 @@ import getpass
 ##### INPUTS AND OUTPUTS #####
 now = datetime.now()
 
+#Creating outputfile with inputfileOUTPUT name and header line
 outputFile =  open(sys.argv[1][:-4]+"OUTPUT.txt", 'w')
 print >> outputFile, "Filename",'\t',"Reads:",'\t',"Mapped Reads:",'\t',"NonMapped Reads",'\t',"% Align",'\t',"OligoC in NM",'\t',"OligoD in NM",'\t',"On target",'\t',"% On Target",'\t',"Off Target",'\t',"% Off Target",'\t'
 
 
-#Logfile
+#Logfile: a logfile is created that states when which script was run by who and saved to a inputfileLOG.txt file
 logFile = open(sys.argv[1][:-4]+"LOG.txt", 'w')
 print >> logFile, "Script was run by user:", getpass.getuser()
 print >> logFile, "Name of the script:", __file__
@@ -33,7 +45,7 @@ print >> logFile, "Description of output data: On off target nr's and percentage
 
 
 ##### SCRIPT #####
-
+#script loops through each line of the inputfile to determine read nr's etc.
 
 f=csv.reader(open(sys.argv[1], 'rU'), dialect=csv.excel_tab)
 for row in f:
@@ -68,14 +80,14 @@ for row in f:
 
 
 
-    #Processing current file:
+#Processing current file for terminal output:
     now = datetime.now()
     print "Started processing file", fileBam, "at", now.strftime("%Y-%m-%d %H:%M:%S")
     
     
     
     
-#total nr of reads (if zero, an exception is required for calculating the percAlignment to prevent error)
+#total nr of reads is mapped + unmapped (if zero, an exception is required for calculating the percAlignment to prevent error)
     inputFileTotalReads = inputFile.mapped + inputFile.unmapped
     if inputFileTotalReads > 0:
         percAlignment =  ((1.0*inputFile.mapped)/inputFileTotalReads)*100
@@ -124,11 +136,14 @@ for row in f:
     else:
         offTargetPerc1500 = "NA"
 
-#####OUTPUT########
+#####OUTPUT######## print to the output file
     print >> outputFile, fileBam,'\t', inputFileTotalReads,'\t', inputFile.mapped,'\t', inputFile.unmapped,'\t', percAlignment,'\t', oligoC,'\t', oligoD,'\t', bam_bed450Count,'\t', onTargetPerc450,'\t', inputFile.mapped-bam_bed1500Count,'\t', offTargetPerc1500,'\t'
 
 
+#cleanup and close files
+f.close()
 outputFile.close()
+pybedtools.cleanup()
 
 #finishing logfile
 now = datetime.now()

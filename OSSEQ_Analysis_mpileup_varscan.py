@@ -10,8 +10,6 @@
 import os
 import sys
 import csv
-import pysam
-import pybedtools
 from datetime import datetime
 import getpass
 
@@ -20,7 +18,7 @@ now = datetime.now()
 
 
 #Logfile
-logFile = open(sys.argv[1][:-4]+"LOG.txt", 'w')
+logFile = open(sys.argv[1][:-4]+".pileupVarscanLOG.txt", 'w')
 print >> logFile, "Script was run by user:", getpass.getuser()
 print >> logFile, "Name of the script:", __file__
 print >> logFile, "Date and time when script was started:", now.strftime("%Y-%m-%d %H:%M")
@@ -50,43 +48,33 @@ for row in f:
         print "ERROR in load file! The bed450 file is expected to be in the bed file format"
 
 
-# Open bam files and bed files for processing
-    inputFile = pysam.Samfile(bam, 'rb')
-    bedtool = pybedtools.BedTool(bam)
-    bed450 = pybedtools.BedTool(bedFile450)
-
-
-#### DEFINE FUNCTIONS #####
-
-
-
-
-
-
-#On/Off target intersectbed (within 450bp or outside or 1500bp of capture probes (450bp region is searched within 1500bedtool (less sequences))
+#IntersectBed and subsequently do a mpileup on the intersected bam files. Next varscan is performed on the mp files. Filenames for output file are created by taking the input bamfile name (fileBam) and replacing the .bam extension with ontarget.bam and subsequently .mp for the pileup, snp.out and ind.out for varscan.
 
     now = datetime.now()
     print "Started processing bed450 at", now.strftime("%Y-%m-%d %H:%M:%S")
 
-    bam_bed450 = bedtool.intersect(bed450)
+    intersectBed = "intersectBed -abam " +pathBam+ " -b " +pathBed+ " > " +fileBam[:-4]+"ontarget.bam"
+    os.sys(intersectBed)
+
 
     now = datetime.now()
-    print "Finished processing bed450 at", now.strftime("%Y-%m-%d %H:%M:%S")
+    print "Started processing pileup at", now.strftime("%Y-%m-%d %H:%M:%S")
 
-    
-
-
-
+    samPileUp = "samtools mpileup  -B -d100000000  -f  /mnt/cluster2-analysis/Data/Reference_and_Resources/genomes/human_g1k_v37/human_g1k_v37.fasta " +fileBam[:-4]+"ontarget.bam > "+fileBam[:-4]+"ontarget.mp"
+    os.sys(samPileUp)
 
 
+    now = datetime.now()
+    print "Started processing varScan SNP at", now.strftime("%Y-%m-%d %H:%M:%S")
 
+    varscanSNP = "java -jar /mnt/cluster2-analysis/Data/Reference_and_Resources/java/VarScan.v2.2.8.jar mpileup2snp "+fileBam[:-4]+"ontarget.mp > " +fileBam[:-4]+"ontarget.snp.out"
+    os.sys(varscanSNP)
 
+    now = datetime.now()
+    print "Started processing varScan SNP at", now.strftime("%Y-%m-%d %H:%M:%S")
 
-
-
-
-
-
+    varscanIND = "java -jar /mnt/cluster2-analysis/Data/Reference_and_Resources/java/VarScan.v2.2.8.jar mpileup2indel "+fileBam[:-4]+"ontarget.mp > " +fileBam[:-4]+"ontarget.ind.out"
+    os.sys(varscanIND)
 
 
 

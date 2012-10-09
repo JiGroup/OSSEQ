@@ -78,10 +78,12 @@ for row in f:
     os.system(varscanIND)
 
 
-
 #finishing logfile
+    print >> logFile, "Output files of this script:", fileBam[:-4]+"ontarget.bam/ontarget.mp/ontarget.snp.out/ontarget.ind.out"
 
-print >> logFile, "Output file of this script:", fileBam[:-4]+"ontarget.bam/ontarget.mp/ontarget.snp.out/ontarget.ind.out" 
+
+
+ 
 now = datetime.now()
 print >> logFile, "Date and time when script was finished:", now.strftime("%Y-%m-%d %H:%M")
 logFile.close()

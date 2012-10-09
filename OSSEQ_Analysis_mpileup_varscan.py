@@ -41,6 +41,8 @@ for row in f:
 
 
 #Check if input files are correct
+    if "_p2" in fileBam:
+        continue
     if bam[-4:] != ".bam":
         print "ERROR in load file! The bam file is expected to be in the bam file format"
     if bedFile450[-4:] != ".bed":

@@ -52,6 +52,7 @@ for row in f:
 #IntersectBed and subsequently do a mpileup on the intersected bam files. Next varscan is performed on the mp files. Filenames for output file are created by taking the input bamfile name (fileBam) and replacing the .bam extension with ontarget.bam and subsequently .mp for the pileup, snp.out and ind.out for varscan. in mpileup -B does not automatically change phred scores close to indels (keeps sequencer phred scores); -d100000000 to prevent stopping pileup after a depth of 8000 (autosetting); -f to add reference genome.
 
     now = datetime.now()
+    print "Started processing file", fileBam, "at", now.strftime("%Y-%m-%d %H:%M:%S")
     print "Started processing bed450 at", now.strftime("%Y-%m-%d %H:%M:%S")
 
     intersectBed = "intersectBed -abam " +bam+ " -b " +bedFile450+ " > " +fileBam[:-4]+"ontarget.bam"

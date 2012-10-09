@@ -54,7 +54,7 @@ for row in f:
     now = datetime.now()
     print "Started processing bed450 at", now.strftime("%Y-%m-%d %H:%M:%S")
 
-    intersectBed = "intersectBed -abam " +bam+ " -b " +fileBed450+ " > " +fileBam[:-4]+"ontarget.bam"
+    intersectBed = "intersectBed -abam " +bam+ " -b " +bedFile450+ " > " +fileBam[:-4]+"ontarget.bam"
     os.system(intersectBed)
 
 

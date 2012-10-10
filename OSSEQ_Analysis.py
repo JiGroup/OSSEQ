@@ -141,7 +141,6 @@ for row in f:
 
 
 #cleanup and close files
-f.close()
 outputFile.close()
 pybedtools.cleanup()
 

@@ -25,7 +25,7 @@ print >> logFile, "Script was run by user:", getpass.getuser()
 print >> logFile, "Name of the script:", __file__
 print >> logFile, "Date and time when script was started:", now.strftime("%Y-%m-%d %H:%M")
 print >> logFile, "Input file of this script:", sys.argv[1]
-print >> logFile, "Description of output data: coverage files (cov.out) and basename.cov.out after files are processed by John's
+print >> logFile, "Description of output data: coverage files (cov.out) and cov_by_region.txt"
 
 
 
@@ -62,22 +62,21 @@ for row in f:
     now = datetime.now()
     print "Started processing coverageBed of file", fileBam, "at", now.strftime("%Y-%m-%d %H:%M:%S")
 
-    coverageBed = "coverageBed -d -abam " +bam+ " -b " +bedFile450+ " > " +fileBam[:-4]+"cov.out"
+    coverageBed = "coverageBed -d -abam " +bam+ " -b " +bedFile450+ " > " +fileBam[:-4]+".cov.out"
     os.system(coverageBed)
 
 
     now = datetime.now()
-    print "Started processing "fileBam[:-4]+"cov.out with total_up_cov_by_regions.pl at", now.strftime("%Y-%m-%d %H:%M:%S")
+    print "Started processing ",fileBam[:-4],"cov.out with total_up_cov_by_regions.pl at", now.strftime("%Y-%m-%d %H:%M:%S")
 
-    perlCovRegions = "perl total_up_cov_by_regions.pl "+fileBam[:-4]+"cov.out"
-    OS.system(perlCovRegions)
+    perlCovRegions = "perl total_up_cov_by_region.pl "+fileBam[:-4]+".cov.out"
+    os.system(perlCovRegions)
 
 
 #finishing logfile
-    print >> logFile, "Output files of this script:", fileBam[:-4]+"cov.out"
+    print >> logFile, "Output files of this script:", fileBam[:-4],".cov.out/.cov_by_region.txt"
 
 now = datetime.now()
 print >> logFile, "Date and time when script was finished:", now.strftime("%Y-%m-%d %H:%M")
 logFile.close()
 
-##TODO: correct output file for perl script

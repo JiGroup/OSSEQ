@@ -51,6 +51,10 @@ for row in f:
         print "ERROR in load file! The bam file is expected to be in the bam file format"
         break
 
+    now = datetime.now()
+    print "Started average and SD of file", pathFile, "at", now.strftime("%Y-%m-%d %H:%M:%S")
+
+
     covOutFile = open(pathFile, 'r')
     coverage = np.loadtxt(covOutFile, skiprows=0, usecols=[4])
     print >> outputFile, file,'\t',np.average(coverage),'\t',np.std(coverage)

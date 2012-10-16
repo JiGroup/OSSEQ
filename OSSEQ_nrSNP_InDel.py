@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-# Take the average of the cov.out files created by coverageBed
-#Uses tabdelimited txt file with path in column 1 and filename in column 2
+# Determine nr of SNP and indels from varscan output
+# Uses tabdelimited txt file with path in column 1 and filename in column 2 as input
 #
-#  Created by Erik Hopmans on 10/12/12.
+#  Created by Erik Hopmans on 10/16/12.
 #  Copyright (c) 2012 Ji Research Group - Stanford Genome Technology Center. All rights reserved.
 
 ##### IMPORT MODULES #####
@@ -19,7 +19,7 @@ import getpass
 
 now = datetime.now()
 outputFile =  open(sys.argv[1][:-4]+"OUTPUT.txt", 'w')
-print >> outputFile, "Filename",'\t',"Average",'\t',"SD"
+print >> outputFile, "Filename",'\t',"SNP",'\t',"InDel"
 
 #Logfile
 logFile = open(sys.argv[1][:-4]+"LOG.txt", 'w')
@@ -33,6 +33,11 @@ print >> logFile, "Description of output data: calculates average and stdev of c
 
 ##### DEFINE FUNCTIONS #####
 
+def file_len(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass
+    return i                            #no +1, because I want to get rid of the header
 
 
 
@@ -47,17 +52,14 @@ for row in f:
 
     #Check if input files are correct, cov.out files, otherwise stop script
 
-    if file[-7:] != "cov.out":
-        print "ERROR in load file! The bam file is expected to be in the bam file format"
+    if file[-4:] != ".out":
+        print "ERROR in load file, incorrect file format! "
         break
 
     now = datetime.now()
-    print "Started calculating average and SD coverage of file", pathFile, "at", now.strftime("%Y-%m-%d %H:%M:%S")
+    print "Started calculating linenr's of file", pathFile, "at", now.strftime("%Y-%m-%d %H:%M:%S")
 
-
-    covOutFile = open(pathFile, 'r')
-    coverage = np.loadtxt(covOutFile, skiprows=0, usecols=[4])
-    print >> outputFile, file,'\t',np.average(coverage),'\t',np.std(coverage)
+    print >> outputFile, file,'\t',file_len(pathFile),'\t',file_len(pathFile[:-7]+"ind.out")
 
 
 #cleanup and close files

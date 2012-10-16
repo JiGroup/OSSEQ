@@ -34,8 +34,9 @@ print >> logFile, "Description of output data: calculates average and stdev of c
 ##### DEFINE FUNCTIONS #####
 
 def file_len(fname):
-    with open(fname) as f:
-        for i, l in enumerate(f):
+    i = 0
+    with open(fname) as j:
+        for i, l in enumerate(j):
             pass
     return i                            #no +1, because I want to get rid of the header
 

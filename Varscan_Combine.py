@@ -1,21 +1,22 @@
 #!/usr/bin/env python
 
-#
+# Varscan_combine.py takes all varscan files (based on ".out" extension) in the directory, combines the variants in each file into 1 combined table
 #
 #
 #  Created by Erik Hopmans on 11/6/12.
 #  Copyright (c) 2012 Ji Research Group - Stanford Genome Technology Center. All rights reserved.
 
 ##### IMPORT MODULES #####
-
-
+import csv
+import sys
+import os
 
 
 ##### INPUTS AND OUTPUTS #####
 
-
-
-
+outputFile = open("temp", "w")
+headers = [x for x in os.listdir('.') if x.endswith('.out')] #List the files ending with '.out' in the directory
+print >> outputFile, "Chrom_position",'\t',"Refbase",'t','\t'.join(headers) #Create Header (it would probably be better to add this after the sort unique step with something like http://stackoverflow.com/questions/3162314/add-headers-to-a-file )
 
 
 ##### DEFINE FUNCTIONS #####
@@ -25,8 +26,28 @@
 
 
 ##### SCRIPT #####
+#Creates a list of all the first 3 columns of the varscan files (chrom, position (combined to 1: chrom_position) and reference base), subsequently sort this list and retain the unique variant positions (by using shell sort and uniq commands)
 
-import csv
+
+for fname in os.listdir('.'):
+    if fname.endswith('out'):
+        with open(fname) as f:
+            for line in f:
+                if line.startswith("Chrom"):
+                    continue
+                tab = line.split('\t')
+                pos = tab[0]+"_"+tab[1]
+                print >> outputFile, pos,'\t',tab[2]
+outputFile.close()
+
+sortUnique = "cat temp | sort -n | uniq > temp2.txt"
+os.system(sortUnique)
+
+##########################
+
+
+
+
 outputcolumn = 'test'
 
 

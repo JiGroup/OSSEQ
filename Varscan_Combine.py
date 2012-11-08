@@ -46,6 +46,7 @@ os.remove("temp")
 #This part is basically a similar function as excels vlookup, it creates a dict(ionary) in which it searches for a specific value (comparable to the table in which excels vlookup searches)
 
 ##### INPUTS AND OUTPUTS #####
+infile = "temp2.txt"
 
 for fname in os.listdir('.'):
     if fname.endswith('out'):
@@ -55,37 +56,37 @@ for fname in os.listdir('.'):
 
         # Open the check file in a context manager. This ensures the file will be closed
         # correctly if an error occurs.EH: Adapted from http://codereview.stackexchange.com/questions/7113/searching-a-value-from-one-csv-file-in-another-csv-file-python
-        with open('checkfile_tab.txt', 'rU') as checkfile:                          # It is important to use rU = universal read mode, prevents errors due to delimeters
+        with open(fname, 'rU') as checkfile:                          # It is important to use rU = universal read mode, prevents errors due to delimeters
             checkreader = csv.DictReader(checkfile, delimiter='\t')
             
             
             # This does the real work. The middle line is a generator expression which
-            # iterates over each line in the check file. The product code and stock
+            # iterates over each line in the check file. The base code and stock
             # level are extracted from each line. This is then converted
-            # into a dictionary. This dictionary has the product codes as its keys and
+            # into a dictionary. This dictionary has the base codes as its keys and
             # their result code as its values.
-            product_result = dict(
-                                  (v['ProductCode'], v[' Stock']) for v in checkreader
+            varBase = dict(
+                                  (v['Chrom'], v['Var']) for v in checkreader
                                   )
 
         # Open the input and output files.
-        with open('infile.csv', 'rb') as infile:
+        with open(infile, 'rU') as infile:
             with open('outfile.csv', 'wb') as outfile:
-                reader = csv.DictReader(infile)
+                reader = csv.DictReader(infile, delimiter='\t')
                 # Use the same field names for the output file.
                 writer = csv.DictWriter(outfile, reader.fieldnames)
                 #writer = csv.DictWriter(outfile, fieldnames=('StockNumber', 'SKU', 'ChannelProfileID'), delimiter=',')
                 writer.writeheader()
                 
-                # Iterate over the products in the input.
-                for product in reader:
+                # Iterate over the bases in the input.
+                for base in reader:
                     # Find the stock level from the dictionary we created earlier. Using
                     # the get() method allows us to specify a default value if the SKU
                     # does not exist in the dictionary.
-                    result = product_result.get(product['SKU'], "-")
+                    result = varBase.get(base['Var'], "-")
                     
-                    # Update the product info.
-                    product[outputcolumn] = result
+                    # Update the base info.
+                    base[outputColumn] = result
                     
                     # Write it to the output file.
-                    writer.writerow(product)
+                    writer.writerow(base)

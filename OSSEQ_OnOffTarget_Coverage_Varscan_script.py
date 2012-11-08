@@ -7,6 +7,7 @@
 #  Copyright (c) 2012 Ji Research Group - Stanford Genome Technology Center. All rights reserved.
 
 ##### IMPORT MODULES #####
+import numpy as np
 import sys
 import csv
 import pysam
@@ -87,16 +88,26 @@ for row in f:
 #Check if input files are correct, skip p2 files, check if input files are bam and bed files
     if "p2." in fileBam:
         continue
+##TODO: Maybe it is better to check if the file is p1? Optimally all the output is created at then end in 1 print line
+
 
 #Do a coverage bed of the p1 bam files vs the bed450 files. -d option is for reporting the depth in each position present in the Bed file. Subsequently run John's total_up_cov_by_regions.pl script by loading the just created cov.out as an argument in the command.
 
     coverageBed = "coverageBed -d -abam " +bam+ " -b " +bed450+ " > " +fileBam[:-4]+".cov.out"
     os.system(coverageBed)
 
-#cov.out = bam.coverage(bed450).saveas(fileBam[:-4]+".cov.out")
+##TODO: implement coveragebed from pybedtools and test
+#cov.out = bam.coverage(bed450, '-d').saveas(fileBam[:-4]+".cov.out")
 #
     perlCovRegions = "perl total_up_cov_by_region.pl "+fileBam[:-4]+".cov.out"
     os.system(perlCovRegions)
+
+
+##TODO: is there a way to do this directly from cov.out instead of reopening the file, pipe directly from coveragebed into numpy?
+covOutFile = open(fileBam[:-4]+".cov.out", 'r')
+coverage = np.loadtxt(covOutFile, skiprows=0, usecols=[4])
+print >> outputFile, file,'\t',np.average(coverage),'\t',np.std(coverage)
+
 
 
 

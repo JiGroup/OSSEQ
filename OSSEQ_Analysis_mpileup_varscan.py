@@ -68,14 +68,14 @@ for row in f:
     print >> logFile, "Description of output data: ontarget.bam & mp & snp.out.vcf files"
     
   
-    intersectBed = "intersectBed -abam "+bam+" -b "+bedFile+" > "+bam.replace("bam", "ontarget.bam")
+    intersectBed = "intersectBed -abam "+bam+" -b "+bedFile+" > "+fileBam.replace("bam", "ontarget.bam")
     shell_command(intersectBed, logFile)
 
-    samPileUp = "samtools mpileup  -B -d100000000  -f "+humanFasta+" "+bam.replace("bam", "ontarget.bam")+" > "+bam.replace("bam", "mp")
+    samPileUp = "samtools mpileup  -B -d100000000  -f "+humanFasta+" "+fileBam.replace("bam", "ontarget.bam")+" > "+fileBam.replace("bam", "ontarget.mp")
     shell_command(samPileUp, logFile)
 
 
-    varScan = "java -jar "+varScanApp+" mpileup2snp "+bam.replace("bam", "mp")+" --output-vcf 1 > " +bam.replace("bam", "snp.out.vcf")
+    varScan = "java -jar "+varScanApp+" mpileup2snp "+bam.replace("bam", "ontarget.mp")+" --output-vcf 1 > " +bam.replace("bam", "ontarget.snp.out.vcf")
     shell_command(varScan, logFile)
 
     logFile.close()

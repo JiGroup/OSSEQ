@@ -75,7 +75,7 @@ for row in f:
     shell_command(samPileUp, logFile)
 
 
-    varScan = "java -jar "+varScanApp+" mpileup2snp "+bam.replace("bam", "ontarget.mp")+" --output-vcf 1 > " +bam.replace("bam", "ontarget.snp.out.vcf")
+    varScan = "java -jar "+varScanApp+" mpileup2snp "+fileBam.replace("bam", "ontarget.mp")+" --output-vcf 1 > " +fileBam.replace("bam", "ontarget.snp.out.vcf")
     shell_command(varScan, logFile)
 
     logFile.close()

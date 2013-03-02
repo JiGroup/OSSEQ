@@ -2,12 +2,12 @@
 
 #  OSSEQ_NatBiotech_SizeFiltering.py
 #  
-# Uses the p1 and p2 sam files (sorted on -n) as command line input files, and keeps following reads:
+# Uses the p1 and p2 sam files (sorted on -n) as command line input files, and calculates insert sizes of following reads:
 #   -reads within 1KB and not overlapping the capture probe
 #   -both reads are aligned 
 #   -both reads are on same chromosome
 #
-#  Created by Erik Hopmans on 11/23/12.
+#  Created by Erik Hopmans on 3/1/13.
 #  Copyright (c) 2012 Ji Research Group - Stanford Genome Technology Center. All rights reserved.
 
 ##### IMPORT MODULES #####
@@ -47,13 +47,15 @@ def flag(i):
 ##### SCRIPT #####
 
 path = './'
-for infile in glob.glob( os.path.join(path, 'p1.*.sam') ):    
+for infile in glob.glob( os.path.join(path, '*.sam') ):    
+    if 'p2' in infile:
+        continue
     p1SamFile = open(infile,'r')
     p2Sam = infile.replace('p1', 'p2')
     p2SamFile = open(p2Sam,'r')
     p1SamFileInsert = infile.replace('sam', 'InsertSize.txt')
     p1SamInsert =  open(p1SamFileInsert, 'w')
-
+    
     while True:
         p1Line = p1SamFile.readline()
         p2Line = p2SamFile.readline()
@@ -96,6 +98,6 @@ for infile in glob.glob( os.path.join(path, 'p1.*.sam') ):
     p1SamFile.close()
     p2SamFile.close()
     p1SamInsert.close()
-
-
-##TODO: in def insertsize, if read 1+2 are mapped on the same strand, I don't know what will happen, not really clean
+# 
+# 
+# ##TODO: in def insertsize, if read 1+2 are mapped on the same strand, I don't know what will happen, not really clean
